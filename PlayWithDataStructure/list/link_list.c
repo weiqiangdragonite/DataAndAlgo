@@ -1,19 +1,32 @@
 /*
- *
+ * 此代码暂时只提供一个思路，貌似比较有问题
  */
+
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "link_list.h"
 
+/*
+ * 不带头结点的定义
+ * link_list_t *list;
+ *
+ */
+
+
+
 
 /*
- * 此代码暂时只提供一个思路，貌似比较有问题
+ * 带头结点
+ * link_list_t list;
+ * init_link_list(&list);
  */
 void
 init_link_list(link_list_t *list)
 {
 	/* 创建头节点 */
-	list = (link_list_t) malloc(sizeof(link_list_t));
-	list->data = NULL;
+	//list = (link_list_t *) malloc(sizeof(link_list_t));
+	list->data = (ElemType) 0;
 	list->next = NULL;
 }
 
@@ -23,7 +36,7 @@ init_link_list(link_list_t *list)
 void
 free_link_list(link_list_t *list)
 {
-	link_list_t *ptr, next;
+	link_list_t *ptr, *next;
 	/* 指向第一个，头结点不删除*/
 	ptr = list->next;
 	/* 第二个结点 */
@@ -32,6 +45,8 @@ free_link_list(link_list_t *list)
 	while (ptr) {
 		free(ptr);
 		ptr = next;
+		if (ptr == NULL)
+			break;
 		next = next->next;
 	}
 
@@ -41,7 +56,8 @@ free_link_list(link_list_t *list)
 /*
  * 带头结点的链表
  */
-int get_link_list(link_list_t *list, unsigned int pos, ElemType *item)
+int
+get_link_list(link_list_t *list, unsigned int pos, ElemType *item)
 {
 	int i;
 	link_list_t *ptr;
@@ -70,11 +86,11 @@ insert_link_list(link_list_t *list, unsigned int pos, ElemType item)
 {
 	int i;
 	link_list_t *ptr;
-	/* point to the first */
-	ptr = list->next;
+	/* point to the head */
+	ptr = list;
 
 	i = 1;
-	while (ptr && (i < pos)) {
+	while (ptr->next && (i < pos)) {
 		ptr = ptr->next;
 		++i;
 	}
@@ -82,7 +98,7 @@ insert_link_list(link_list_t *list, unsigned int pos, ElemType item)
 		return -1;
 
 	link_list_t *newptr;
-	newptr = (link_list_t) malloc(sizeof(link_list_t));
+	newptr = (link_list_t *) malloc(sizeof(link_list_t));
 	newptr->data = item;
 	newptr->next = ptr->next;
 	ptr->next = newptr;
@@ -93,6 +109,7 @@ insert_link_list(link_list_t *list, unsigned int pos, ElemType item)
 /*
  *
  */
+int
 delete_link_list(link_list_t *list, unsigned int pos, ElemType *item)
 {
 	int i;
