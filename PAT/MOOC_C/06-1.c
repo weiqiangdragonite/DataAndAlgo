@@ -24,85 +24,17 @@
 10
 
 
-参考 大话数据结构
-
-Tips:
-用逆波兰表示法（RPN），也叫后缀表达式
-如 9+(3-1)*3+10/2 --> 9 3 1 - 3 * + 10 2 / +
-
-
-中缀表达式(infix expression) 转 后缀表达式(postfix expression)
-规则: 从左到右遍历中缀表达式的每个数字和符号，若是数字就输出，即成为后
-缀表达式的一部分；若是符号，则判断其与栈顶符号的优先级，是右括号或优先级低
-于前一个符号(乘除优先加减)则栈顶元素依次出栈并输出， 并将当前符号进栈，一直
-到最终输出后缀表达式为止。
+好吧，我错了，请看题目
+4种运算符的优先级相同，按从左到右的顺序计算
 
 
 */
 
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 
-struct stack {
-	vo;
-	unsigned int top;	/* the top of the stack */
-};
-
-struct stack array;
-
-push(struct stack *s, void *item)
-{
-	/* stack is full */
-	if (s->top == (s->size - 1))
-		return -1;
-
-	/* first time, top is 0 */
-	++(s->top);
-	//*(s->item) = item;
-	//++(s->item);
-
-	return 0;
-}
-
-#define GET_NUM()	{ num = 0; \
-			while (isdigit(line[i])) \
-				num = num * 10 + line[i++]; }
-
-int
-main(int argc, char *argv[])
-{
-	char line[256];
-	int a, b, res;
-	char op;
-	int i;
-	int num;
-
-	//fgets(line, sizeof(line), stdin);
-
-	i = 0;
-	/* the first character is not a digit */
-	if (!isdigit(line[i])) {
-		printf("ERROR\n");
-		return -1;
-	}
-
-
-	int size = 256;
-	array.item = calloc(size, sizeof(void *));
-	arrat.size = size;
-
-
-	while (1) {
-		num = get_num(line, &i);
-		
-		op = line[i];
-		if (op == '+' || op == '-')
-	}
-
-	return 0;
-}
 
 static int
 get_num(const char *line, int *index)
@@ -112,8 +44,53 @@ get_num(const char *line, int *index)
 	num = 0;
 	i = *index;
 	while (isdigit(line[i]))
-		num = num * 10 + line[i++];
+		num = num * 10 + (line[i++] - '0');
 	*index = i;
 
 	return num;
 }
+
+
+int
+main(int argc, char *argv[])
+{
+	char line[256];
+	int i, num, res;
+	char op;
+	
+	fgets(line, sizeof(line), stdin);
+	/* remove the last '='
+	because the last two character is: = \n  */
+	line[strlen(line) - 2] = '\0';
+
+	i = 0;
+	if (isdigit(line[i]))
+		res = get_num(line, &i);
+
+	while (line[i]) {
+		op = line[i++];
+
+		if (isdigit(line[i]))
+			num = get_num(line, &i);
+
+		if (op == '+')
+			res += num;
+		else if (op == '-')
+			res -= num;
+		else if (op == '*')
+			res *= num;
+		else if (op == '/' && num != 0)
+			res /= num;
+		else {
+			printf("ERROR\n");
+			return 0;
+		}
+	}
+
+	printf("%d\n", res);
+
+	return 0;
+}
+
+
+
