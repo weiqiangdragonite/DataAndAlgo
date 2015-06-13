@@ -47,6 +47,7 @@ main(int argc, char *argv[])
 		num = i;
 		is_prime_num = 0;
 
+		// 效率太低了
 		for (j = 2; j <= num; j++) {
 			if (j == num)
 				is_prime_num = 1;
