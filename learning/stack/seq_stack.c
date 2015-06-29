@@ -2,14 +2,32 @@
  *
  */
 
-#include "seq_stack.h"
+
+#define STACK_SIZE	1024;
+
+typedef int ElemType;
+
+
+/*
+ *
+ */
+struct stack {
+	ElemType data[STACK_SIZE];
+	int top;
+};
+
+typedef struct stack stack_t;
+
+
+
+
 
 
 /*
  *
  */
 int
-push(stack_t *stack, ElemType *item)
+push(stack_t *stack, ElemType item)
 {
 	/* if full */
 	if (stack->top == STACK_SIZE - 1)
@@ -18,7 +36,7 @@ push(stack_t *stack, ElemType *item)
 	/* point to the next empty position */
 	++stack->top;
 
-	stack->data[stack->top] = *item;
+	stack->data[stack->top] = item;
 
 	return stack->top;
 }
@@ -37,3 +55,4 @@ pop(stack_t *stack, ElemType *item)
 
 	return stack->top;
 }
+

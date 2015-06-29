@@ -2,8 +2,22 @@
  *
  */
 
-#include "stdlib.h"
-#include "link_stack.h"
+
+typedef int ElemType;
+
+
+struct node {
+	ElemType data;
+	struct node *next;
+};
+
+struct link_stack {
+	struct node *top;
+	unsigned int count;
+};
+
+typedef link_stack link_stack_t;
+
 
 /*
  *
