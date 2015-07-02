@@ -1,9 +1,11 @@
 /*
- *
+ * 循环队列 - 只能存储n-1个元素
  */
+#include <stdio.h>
+#include <string.h>
 
 
-#define QUEUE_SIZE	1024;
+#define QUEUE_SIZE	5
 
 typedef int ElemType;
 
@@ -27,14 +29,15 @@ typedef struct queue queue_t;
 void
 init_queue(queue_t *queue)
 {
+	memset(queue, 0, sizeof(queue_t));
 	queue->front = 0;
 	queue->rear = 0;
 }
 
 int
-queue_length(queue_t *q)
+length(queue_t *q)
 {
-	return (q->rear - q->front + QUEUE_SIZE) % QUEUE_SIZE
+	return (q->rear - q->front + QUEUE_SIZE) % QUEUE_SIZE;
 }
 
 
@@ -45,7 +48,7 @@ int
 enter(queue_t *q, ElemType item)
 {
 	/* if full */
-	if (q->rear + 1 == q->front)
+	if ((q->rear + 1) % QUEUE_SIZE == q->front)
 		return -1;
 
 	q->data[q->rear] = item;
@@ -69,4 +72,30 @@ delete(queue_t *q, ElemType *item)
 
 	return 0;
 }
+
+
+/******************************************************************************/
+
+
+int
+main(void)
+{
+	queue_t queue;
+	int i, item;
+
+	init_queue(&queue);
+
+	for (i = 0; i < 10; ++i)
+		enter(&queue, i);
+	printf("after enter, length = %d\n", length(&queue));
+
+	while (delete(&queue, &item) != -1)
+		printf("q = %d\n", item);
+
+	return 0;
+}
+
+
+
+
 

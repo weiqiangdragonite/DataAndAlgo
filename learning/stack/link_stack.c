@@ -1,7 +1,9 @@
 /*
- *
+ * 栈的链式存储
  */
 
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef int ElemType;
 
@@ -16,11 +18,20 @@ struct link_stack {
 	unsigned int count;
 };
 
-typedef link_stack link_stack_t;
+typedef struct link_stack link_stack_t;
+
+
+
+void
+init_stack(link_stack_t *stack)
+{
+	stack->top = NULL;
+	stack->count = 0;
+}
 
 
 /*
- *
+ * 不需要头结点
  */
 int
 push(link_stack_t *stack, ElemType item)
@@ -39,7 +50,8 @@ push(link_stack_t *stack, ElemType item)
 /*
  *
  */
-int pop(link_stack_t *stack, ElemType *item)
+int
+pop(link_stack_t *stack, ElemType *item)
 {
 	/* if empty */
 	if (stack->count == 0)
@@ -55,3 +67,30 @@ int pop(link_stack_t *stack, ElemType *item)
 
 	return 0;
 }
+
+
+
+/******************************************************************************/
+
+
+int
+main(void)
+{
+	link_stack_t stack;
+	int i, item;
+
+	init_stack(&stack);
+
+	for (i = 0; i < 5; ++i)
+		push(&stack, i);
+	printf("After push, length = %d\n", stack.count);
+
+	while (pop(&stack, &item) != -1)
+		printf("[%d] = %d\n", stack.count, item);
+
+	return 0;
+}
+
+
+
+
