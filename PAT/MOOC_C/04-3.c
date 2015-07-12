@@ -31,6 +31,23 @@
 
 #include <stdio.h>
 
+
+/* 抄了一个判断素数的:
+   把n除以从2到n的平方根之间的每一个数，只要有一个余数为0，n就不是素数 */
+int
+is_prime(int n)
+{
+	int d;
+	if (n <= 1)
+		return 0;
+	for (d = 2; d * d <= n; ++d) {
+		if (n % d == 0)
+			return 0;
+	}
+	return 1;
+}
+
+
 int
 main(int argc, char *argv[])
 {
@@ -65,3 +82,6 @@ main(int argc, char *argv[])
 
 	return 0;
 }
+
+
+

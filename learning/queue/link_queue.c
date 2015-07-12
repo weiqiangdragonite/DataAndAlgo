@@ -22,7 +22,9 @@ typedef struct link_queue link_queue_t;
 
 
 
-
+/*
+ * 初始化队列
+ */
 void
 init_queue(link_queue_t *q)
 {
@@ -33,7 +35,7 @@ init_queue(link_queue_t *q)
 
 
 /*
- * 不带头结点
+ * 入队：不带头结点
  */
 int
 enter(link_queue_t *q, ElemType item)
@@ -56,7 +58,7 @@ enter(link_queue_t *q, ElemType item)
 }
 
 /*
- * 不带头结点
+ * 出对：不带头结点
  */
 int
 delete(link_queue_t *q, ElemType *item)
@@ -71,7 +73,7 @@ delete(link_queue_t *q, ElemType *item)
 	*item = ptr->data;
 	q->front = ptr->next;
 
-	/* delete the last item, rear point to head */
+	/* after delete the last item, rear point to head */
 	if (q->rear == ptr)
 		q->rear = q->front;
 	free(ptr);

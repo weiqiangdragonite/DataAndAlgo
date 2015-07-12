@@ -21,7 +21,9 @@ struct link_stack {
 typedef struct link_stack link_stack_t;
 
 
-
+/*
+ * 初始化栈
+ */
 void
 init_stack(link_stack_t *stack)
 {
@@ -31,7 +33,7 @@ init_stack(link_stack_t *stack)
 
 
 /*
- * 不需要头结点
+ * 入栈：不需要头结点
  */
 int
 push(link_stack_t *stack, ElemType item)
@@ -48,7 +50,7 @@ push(link_stack_t *stack, ElemType item)
 }
 
 /*
- *
+ * 出栈：不需要头结点
  */
 int
 pop(link_stack_t *stack, ElemType *item)
