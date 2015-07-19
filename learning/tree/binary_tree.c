@@ -320,7 +320,6 @@ post_order_traverse_v2(struct binary_tree *tree)
 			/* 进入结点的左子树 */
 			ptr = ptr->lchild;
 
-
 		} else {
 			/* 返回栈顶结点 */
 			top(&s, &ptr);
