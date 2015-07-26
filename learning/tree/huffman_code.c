@@ -19,6 +19,8 @@ struct huffman_list {
 	struct huffman_list *next;
 };
 
+
+/* 哈夫曼编码 */
 struct huffman_table {
 	char data;
 	char code[30];
@@ -88,6 +90,8 @@ pop_from_list(struct huffman_list **list, int *counter)
 /*
  * 构造哈夫曼树，从有序的集合(按权值从大到小排)，选取两颗权值最小的树构造一颗
  * 新的二叉树，删除集合中的那两颗树，把新树放进集合中，重复步骤，直到剩下一颗树
+ *
+ * 可以考虑用堆来构建，而不是链表，进行两者效率的比较（好像堆的好些）
  */
 void
 create_huffman_tree(struct huffman_list **list, int *counter)
@@ -127,6 +131,7 @@ create_huffman_tree(struct huffman_list **list, int *counter)
 	insert_into_list(&(*list), ptr);
 	++*counter;
 
+	/* 尾递归，这里可优化 */
 	create_huffman_tree(&(*list), counter);
 }
 
@@ -180,13 +185,48 @@ init_huffman_list(struct huffman_list **list)
 
 
 /*
+ * 递归
  * 中序遍历：先遍历左子树，然后显示结点数据，再遍历右子树
  */
 void
 in_order_traverse(struct huffman_node *tree)
 {
-	/* 树的最大深度，也是哈夫曼编码的最大长度，自己设定 */
-	static char path[10];
+	if (tree == NULL)
+		return;
+
+	/* traverse left tree */
+	in_order_traverse(tree->lchild);
+	/* show the node data */
+	printf("[%c | %d]", tree->data, tree->weight);
+	/* traverse right tree */
+	in_order_traverse(tree->rchild);
+}
+
+int
+get_tree_height(struct huffman_node *tree)
+{
+	int hl, hr, max;
+	if (tree) {
+		/* 求左子树的深度 */
+		hl = get_tree_height(tree->lchild);
+		/* 求右子树的深度 */
+		hr = get_tree_height(tree->rchild);
+		/* 求最大值 */
+		max = (hl > hr) ? hl : hr;
+		return (max + 1);	/* 要加回根结点 */
+	}
+	return 0;	/* 空树深度为0 */
+}
+
+/*
+ * 算出每个结点的哈夫曼路径，保存到编码表中
+ * 按中序遍历的方式，保存从根结点到叶子结点的路径，再打印
+ */
+void
+huffman_hash(struct huffman_node *tree, char path[])
+{
+	/* 树的最大深度，也是哈夫曼编码的最大长度，求树的深度 */
+	//static char path[10];
 	/* 树的深度从1开始，根在第一层 */
 	static int deep = 1;
 
@@ -196,10 +236,10 @@ in_order_traverse(struct huffman_node *tree)
 	/* traverse left tree */
 	if (tree->lchild != NULL) {
 		path[deep++] = '0';
-		in_order_traverse(tree->lchild);
+		huffman_hash(tree->lchild, path);
 	}
 
-	/* 显示结点路径 */
+	/* 显示叶子结点路径 */
 	if (tree->data != 0) {
 		int i;
 		int num = tree->data - 'A';
@@ -209,7 +249,7 @@ in_order_traverse(struct huffman_node *tree)
 		}
 		hash[num].data = tree->data;
 		printf(" --> %c\n", tree->data);
-	/* 返回上一层 */
+	/* 不是叶子结点，返回上一层 */
 	} else {
 		--deep;
 	}
@@ -217,14 +257,14 @@ in_order_traverse(struct huffman_node *tree)
 	/* traverse right tree */
 	if (tree->rchild != NULL) {
 		path[deep++] = '1';
-		in_order_traverse(tree->rchild);
+		huffman_hash(tree->rchild, path);
 	}
 	if (tree->data == 0)
 		--deep;
 }
 
 /*
- *
+ * 对照哈夫曼编码表，把字符翻译成对应的编码
  */
 void
 huffman_encode(char *str)
@@ -252,6 +292,7 @@ huffman_decode(struct huffman_node *tree, const char const *str)
 	static int deep = 0;
 	static char end = 0;
 
+	/* 字符为0，往左子树查找 */
 	if (*(str + pos) == '0' && tree->lchild != NULL) {
 		++deep;
 		printf("%c", *(str + pos));
@@ -259,6 +300,8 @@ huffman_decode(struct huffman_node *tree, const char const *str)
 		huffman_decode(tree->lchild, str);
 		//printf("return lchild: deep = %d, pos = %d\n", deep, pos);
 		--deep;
+
+	/* 字符为1，往右子树查找 */
 	} else if (*(str + pos) == '1' && tree->rchild != NULL) {
 		++deep;
 		printf("%c", *(str + pos));
@@ -266,6 +309,8 @@ huffman_decode(struct huffman_node *tree, const char const *str)
 		huffman_decode(tree->rchild, str);
 		//printf("return rchild: deep = %d, pos = %d\n", deep, pos);
 		--deep;
+
+	/* 已到树的尽头，打印 */
 	} else {
 		++deep;
 		printf(" --> %c\n", tree->data);
@@ -293,6 +338,7 @@ main(int argc, char *argv[])
 {
 	struct huffman_list *list;
 	int counter;
+	int deep;
 
 	list = NULL;
 
@@ -324,8 +370,13 @@ main(int argc, char *argv[])
 	}
 
 	printf("huffman code:\n");
-	in_order_traverse(list->tree);
+	/* 求哈夫曼树的深度 */
+	deep = get_tree_height(list->tree);
+	char path[deep+1];	/* 路径从1开始存起 */
+	huffman_hash(list->tree, path);
 	printf("\n");
+
+	/* 上面是哈夫曼树的构造，下面是哈夫曼编码 */
 
 	printf("huffman hash table:\n");
 	int i;
@@ -341,6 +392,7 @@ main(int argc, char *argv[])
 	printf("after decode:\n");
 	huffman_decode(list->tree, "11111110100000011011010010");
 	printf("\n");
+
 
 	return 0;
 }
