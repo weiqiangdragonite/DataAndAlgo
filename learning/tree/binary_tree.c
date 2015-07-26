@@ -363,6 +363,24 @@ level_order_traverse(struct binary_tree *tree)
 	}
 }
 
+/*
+ * 求树的深度
+ */
+int
+get_tree_height(struct binary_tree *tree)
+{
+	int hl, hr, max;
+	if (tree) {
+		/* 求左子树的深度 */
+		hl = get_tree_height(tree->left);
+		/* 求右子树的深度 */
+		hr = get_tree_height(tree->right);
+		/* 求最大值 */
+		max = (hl > hr) ? hl : hr;
+		return (max + 1);	/* 要加回根结点 */
+	}
+	return 0;	/* 空树深度为0 */
+}
 
 
 /*
