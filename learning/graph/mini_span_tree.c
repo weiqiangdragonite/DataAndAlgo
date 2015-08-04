@@ -67,6 +67,77 @@ prim()
 }
 
 
+/******************************************************************************/
+
+
+#define MAX_EDGE	100	/* 边数最大值 */
+#define MAX_VEX		100
+
+/*
+ * 边集数组
+ */
+struct edge {
+	int begin;
+	int end;
+	int weight;
+};
+
+
+/*
+ * 查找连线顶点的尾部下标
+ */
+int find(int parent[], int i)
+{
+	while (parent[i] > 0)
+		i = parent[i];
+
+	return i;
+}
+
+
+/*
+ *
+ */
+void
+kruskal()
+{
+
+
+	struct edge edges[MAX_EDGE];	/* 定义边集数组 */
+	int parent[MAX_VEX];		/* 定义数组来判断边与边是否形成环路 */
+
+	/* 将边集数组按权值由小到大排列 */
+	sort();
+
+	memset(parent, 0, sizeof(parent));
+
+	/* 循环每一条边 */
+	for (i = 0; i < graph->num_edges; ++i) {
+		n = find(parent, edges[i].begin);
+		m = find(parent, edges[i].end);
+
+		/* n != m 说明此边没有与现有生成树形成环路 */
+		if (n != m) {
+			/* 将次边的结尾顶点放入下标为起点的parent中 */
+			/* 表示此顶点已经在生成树集合中 */
+			parent[n] = m;
+
+			printf("(%d, %d) - %d", edges[i].begin, edges[i].end
+				edges[i].weight);
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
