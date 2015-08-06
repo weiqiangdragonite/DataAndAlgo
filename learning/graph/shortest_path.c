@@ -57,3 +57,40 @@ dijkstra( *graph, int v0, int p[], int d[])
 }
 
 
+
+/*
+ * 弗洛伊德算法，求网图G中各定点v到其余顶点w最短路径p[v][w]及带权长度d[v][w]
+ */
+void
+floyd()
+{
+
+	/* 初始化d与p */
+	for (v = 0; v < graph->num_vertexes; ++v) {
+		for (w = 0; w < graph->num_vertexes; ++w) {
+			d[v][w] = graph->arc[v][w];	/* d为对应点间的权值 */
+			p[v][w] = w;
+		}
+	}
+
+	for (k = 0; k < graph->num_vertexes; ++k) {
+		for (v = 0; v < graph->num_vertexes; ++v) {
+			for (w = 0; w < graph->num_vertexes; ++w) {
+				/* 如果经过下标为k顶点路径比原两点间路径更短，*/
+				/* 将当前两点间权值设为更小的一个 */
+				if (d[v][w] > d[v][k] + d[k][w]) {
+					d[v][w] = d[v][k] + d[k][w];
+					p[v][w] = p[v][k];/* 路径设为经过下标为k的顶点 */
+				}
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
