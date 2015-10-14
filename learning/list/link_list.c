@@ -1,6 +1,28 @@
 /*
  * 单链表
+ *
+ * Don't compile this file.
  */
+
+/*
+ * ADT
+ *
+ * make_empty();
+ * isempty();
+ * islast();
+ * find();
+ * delete();
+ * find_previous();
+ * insert()
+ * delete_list();
+ * header();
+ * first();
+ * advance();
+ * retrieve();
+ *
+ */
+
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,15 +30,18 @@
 
 typedef int ElemType;
 
+
 /*
  *
  */
-struct link_list {
+struct node {
 	ElemType data;
-	struct link_list *next;
+	struct node *next;
 };
 
-typedef struct link_list link_list_t;
+typedef struct node list_t;
+
+
 
 void init_link_list(link_list_t *list);
 void free_link_list(link_list_t *list);
@@ -25,20 +50,21 @@ int insert_link_list(link_list_t *list, unsigned int pos, ElemType item);
 int delete_link_list(link_list_t *list, unsigned int pos, ElemType *item);
 
 
+
 /*
 
-带头结点
+with header linked list - default
 list
 +--+-+   +----+-+   +----+-+           +----+------+
 |  | +-->| a1 | +-->| a2 | +--> ... -->| an | NULL |
 +--+-+   +----+-+   +----+-+           +----+------+
+         a1 = list->next
 
-
-不带头结点
+no header
          +----+-+   +----+-+           +----+------+
  list -->| a1 | +-->| a2 | +--> ... -->| an | NULL |
          +----+-+   +----+-+           +----+------+
-
+         a1 = list
 */
 
 
@@ -49,12 +75,12 @@ main(int argc, char *argv[])
 	int i;
 	int item;
 
-	/* 带头结点 */
-	link_list_t list;
-	init_link_list(&list);
+	/* with header */
+	list_t list;
+	init_list(&list);	/* must call this */
 
-	/* 不带头结点 */
-	//link_list_t *list = NULL;
+	/* no header */
+	//list_t *list = NULL;
 
 
 	for (i = 0; i < 10; ++i)
@@ -97,19 +123,144 @@ main(int argc, char *argv[])
 /******************************************************************************/
 
 
-
-
 /*
- * 带头结点链表
- * link_list_t list;
- * init_link_list(&list);
+ * only for header linked list
+ *
+ * list_t list;
+ * init_list(&list);
  */
 void
-init_link_list(link_list_t *list)
+init_list(list_t *list)
 {
 	list->data = (ElemType) 0;
 	list->next = NULL;
 }
+
+
+/*
+ * only for header linked list.
+ * return 1 if list is empty
+ *
+ * if no header linked list, you can just test if (list == NULL)
+ */
+int
+isempty(list_t *list)
+{
+	return (list->next == NULL);
+}
+
+
+/*
+ * test if the current element is the last element in linked list.
+ * both for header linked list and no header linked list.
+ *
+ * the item must be in the linked list
+ */
+int
+islast(list_t *item)
+{
+	return (item->next == NULL);
+}
+
+
+
+
+
+
+
+/*
+ * find the element position in the linked list
+ *
+ * I don't think this function has any meaning.
+ */
+list_t *
+find(list_t *list, ElemType item)
+{
+	list_t *ptr;
+
+	/* point to the first item */
+	ptr = list->next;
+	/* 如果是不带头结点的链表，直接 ptr = list 即可 */
+
+	while (ptr != NULL && ptr->data != item)
+		ptr = ptr->next;
+
+	return ptr;
+}
+
+/*
+ * just for with header linked list
+ */
+list_t *
+find_previous(list_t *list, ElemType item)
+{
+	list_t *ptr;
+
+	/* point to header */
+	ptr = list;
+
+	while (ptr->next != NULL && ptr->next->data != item)
+		ptr = ptr->next;
+
+	return ptr;
+}
+
+
+/*
+ * delete item in list
+ */
+void
+delete(list_t *list, ElemType item)
+{
+	list_t prev, ptr;
+
+	prev = find_previous(list, item);
+
+	if (!islast(prev)) {
+		ptr = prev->next;
+		prev->next = ptr->next;
+		free(ptr);
+	}
+}
+
+/*
+ * delete entire list, with header
+ */
+void
+delete_list(list_t *list)
+{
+	list_t *ptr, *tmp;
+
+	ptr = list->next;
+	while (ptr != NULL) {
+		tmp = ptr->next;
+		free(ptr);
+		ptr = tmp;
+	}
+	list->next = NULL;
+}
+
+
+/*
+ * insert item after the specific element
+ */
+void
+insert(list_t *list, list_t *elem, ElemType item)
+{
+	list_t *ptr;
+
+	ptr = malloc(list_t);
+	ptr->data = item;
+	ptr->next = elem->next;
+
+	elem->next = ptr;
+}
+
+
+
+
+
+
 
 /*
  * 单链表整表创建的算法思路:
@@ -158,6 +309,9 @@ free_link_list(link_list_t *list)
 	list->next = NULL;
 }
 
+
+
+
 /*
  * 获取第i个位置的元素
  *
@@ -173,10 +327,10 @@ free_link_list(link_list_t *list)
  * 时间复杂度为 O(n)
  */
 int
-get_link_list(link_list_t *list, unsigned int pos, ElemType *item)
+get_list(list_t *list, unsigned int pos, ElemType *item)
 {
 	int i;
-	link_list_t *ptr;
+	list_t *ptr;
 
 	/* point to the first item */
 	ptr = list->next;
