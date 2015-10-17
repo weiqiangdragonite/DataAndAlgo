@@ -1,5 +1,6 @@
 /*
  * 单链表
+ * 参考大话数据结构和Weiss "DSAAC"
  *
  * Don't compile this file.
  */

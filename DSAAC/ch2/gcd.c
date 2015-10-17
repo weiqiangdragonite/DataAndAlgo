@@ -1,5 +1,6 @@
 /*
  * O(log N)
+ * 求最大公约数
  */
 
 unsigned int
