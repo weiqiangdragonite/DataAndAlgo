@@ -95,4 +95,82 @@ main(void)
 
 
 
+/*******************************************************************************
+* DSAAC
+*******************************************************************************/
+
+struct node {
+	int data;
+	struct node *next;
+};
+
+typedef struct node stack_t;
+
+
+int
+isempty(stack_t *stack)
+{
+	return (stack->next == NULL);
+}
+
+stack_t *
+create_stack()
+{
+	stack_t *s;
+	s = malloc(stack_t);
+	s->next = NULL;
+	make_empty(s);
+	return s;
+}
+
+void
+make_empty(stack_t *s)
+{
+	if (s == NULL)
+		error();
+
+	while (!isempty(s))
+		pop(s);
+}
+
+void
+push(stack_t *s, int x)
+{
+	stack_t *p = malloc(sizeof(stack_t));
+	p->data = x;
+	p->next = s->next;
+	s->next = p;
+}
+
+int
+top(stack_t *s)
+{
+	if (isempty(s))
+		error
+
+	return s->next->data;
+}
+
+void
+pop(stack_t *s)
+{
+	if (isempty(s))
+		error
+
+	stack_t *ptr;
+
+	ptr = s->next;
+	s->next = s->next->next;
+	free(ptr);
+}
+
+
+
+
+
+
+
+
+
+
 
