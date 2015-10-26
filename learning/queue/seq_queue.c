@@ -34,6 +34,7 @@ init_queue(queue_t *queue)
 	queue->rear = 0;
 }
 
+
 int
 length(queue_t *q)
 {
@@ -95,6 +96,83 @@ main(void)
 	return 0;
 }
 
+
+/******************************************************************************/
+
+struct node {
+	int capacity;
+	int front;
+	int rear;
+	int size;
+	int *array;
+};
+
+typedef struct node queue_t;
+
+queue_t *
+create_queue(int size)
+{
+	queue_t *q;
+
+	q = malloc(sizeof(queue_t));
+	q->capacity = size;
+	q->array = malloc(sizeof(int) * size);
+	make_empty(q);
+}
+
+int
+isempty(queue_t *q)
+{
+	return (q->size == 0);
+}
+
+voif
+make_empty(queue_t *q)
+{
+	q->size = 0;
+	q->front = 1;
+	q->rear = 0;
+}
+
+int
+isfull(queue_t *q)
+{
+	return (q->size == q->capacity);
+}
+
+int
+succ(queue_t *q, int value)
+{
+	if (++value == q->capacity)
+		return 0;
+	return value;
+}
+
+void
+enqueue(queue_t *q, int item)
+{
+	if (isfull(q))
+		error;
+	else {
+		q->size++;
+		q->rear = succ(q, q->rear);
+		q->array[q->rear] = item;
+	}
+}
+
+int
+dequeue(queue_t *q)
+{
+	int tmp;
+	if (isempty(q))
+		error;
+	else {
+		q->size--;
+		tmp = q->array[q->front];
+		q->front = succ(q, q->front);
+	}
+	return tmp;
+}
 
 
 

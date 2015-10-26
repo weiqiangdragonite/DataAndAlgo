@@ -102,5 +102,59 @@ main(void)
 }
 
 
+/******************************************************************************/
+
+struct node {
+	int data;
+	struct node *front;
+	struct node *rear;
+	struct node *next;
+};
+
+
+/* with headr */
+queue_t *
+create_queue(void)
+{
+	queue_t *q;
+	q = malloc(sizeof(queue_t));
+
+	q->front = q->rear = q->next = NULL;
+}
+
+int
+isempty(queue_t *q)
+{
+	return (q->front == NULL);
+}
+
+void
+enqueue(queue_t *q, int item)
+{
+	queue_t *ptr = malloc(sizeof(queue_t));
+
+	ptr->data = item;
+	ptr->front = ptr->rear = ptr->next = NULL;
+
+	if (isempty(q))
+		q->front = ptr;
+	else
+		q->rear->next = ptr;
+	q->rear = ptr;
+}
+
+void
+dequeue(queue_t *q)
+{
+	if (isempty(q))
+		error();
+
+	queue_t *ptr = q->front;
+
+	q->front = q->front->next;
+	free(ptr);
+}
+
+
 
 
