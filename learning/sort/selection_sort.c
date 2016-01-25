@@ -1,5 +1,6 @@
 /*
  * Simple Selection Sort - 属于稳定算法
+ * 时间复杂度: O(n^2)
  */
 
 #include <stdio.h>
@@ -48,5 +49,28 @@ main(int argc, char *argv[])
 	printf("\n");
 
 	return 0;
+}
+
+
+
+
+
+/*
+ * cmp_func是比较函数
+ */
+void
+selection_sort(ElemType a[], int n)
+{
+	for (i = 0; i < n; ++i) {
+		min = i;
+		/* 从第i+1个元素开始查找最小值 */
+		for (j = i + 1; j < n; ++j) {
+			if (cmp_func(a[j], a[min]) < 0)
+				min = j;
+		}
+
+		if (min != i)
+			swap(a, i, min);
+	}
 }
 

@@ -1,9 +1,13 @@
 /*
  * Heap Sort - 堆排序，不稳定算法
+ * O(nlogn)
  */
 
 #include <stdio.h>
 
+
+void heap_sort_v1(int a[], int n);
+void heap_sort_v2(int a[], int n);
 
 /*
  * 构成大顶堆 - 根结点从0开始
@@ -61,7 +65,7 @@ heap_adjust(int a[], int i, int n)
  * 从小到大排列
  */
 void
-heap_sort(int a[], int n)
+heap_sort_v1(int a[], int n)
 {
 	int i, tmp;
 
@@ -89,20 +93,141 @@ main(int argc, char *argv[])
 {
 	int i, n;
 	//int num[] = {50, 10, 90, 30, 70, 40, 80, 60, 20};
-	int num[] = {49, 38, 65, 97, 26, 13, 27, 49, 55, 4};
+	//int num[] = {49, 38, 65, 97, 26, 13, 27, 49, 55, 4};
+	int num[] = {0, 49, 38, 65, 97, 26, 13, 27, 49, 55, 4};
 
 	n = sizeof(num) / sizeof(int);
 	printf("Before heap sort: ");
-	for (i = 0; i < n; ++i)
+	for (i = 1; i < n; ++i)
 		printf("%d ", num[i]);
 	printf("\n");
 
-	heap_sort(num, n);
+
+	heap_sort_v2(num, n-1);	/* 注意是n-1 */
 
 	printf("After heap sort: ");
-	for (i = 0; i < n; ++i)
+	for (i = 1; i < n; ++i)
 		printf("%d ", num[i]);
 	printf("\n");
 
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+void
+swap(int a[], int x, int y)
+{
+	int tmp;
+
+	tmp = a[x];
+	a[x] = a[y];
+	a[y] = tmp;
+}
+
+int
+cmp_func(int a, int b)
+{
+	if (a == b)
+		return 0;
+	else if (a < b)
+		return -1;
+	else if (a > b)
+		return 1;
+}
+
+
+
+/*
+ * 数组从1开始
+ * 从下至上的重新建堆操作
+ */
+void
+swim(int a[], int n, int k)
+{
+	/* 如果元素比其父元素大，则交换 */
+	while (k > 1 && cmp_func(a[k], a[k/2]) > 0) {
+		swap(a, k, k/2);
+		k /= 2;
+	}
+}
+
+/*
+ * 数组从1开始
+ * 由上至下的重新建堆操作
+ */
+void
+sink(int a[], int n, int k)
+{
+	int j;
+
+	while (2*k < n) {	/* 有子结点 */
+		j = 2 * k;
+		/* 找出最大的子结点 */
+		if (cmp_func(a[j], a[j+1]) < 0)
+			++j;
+		/* 如果父结点比子结点大，表示满足要求 */
+		if (cmp_func(a[k], a[j]) > 0)
+			break;
+		/* 否则与子结点交换位置 */
+		swap(a, k, j);
+		k = j;
+	}
+}
+
+
+void
+insert(int a[], int n, int item)
+{
+	/* 将元素添加到数组末尾 */
+	a[++n] = item;
+	/* 然后让该元素从下至上重建堆 */
+	swim(a, n, n);
+}
+
+int
+del_max(int a[], int n)
+{
+	/* 根结点从1开始 */
+	int max = a[1];
+	/* 将最后一个元素和根结点元素进行交换 */
+	swap(a, 1, n);
+	/* 对根结点从上至下重新建堆 */
+	sink(a, n, 1);
+	/* 将最后一个元素置空 */
+	a[n--] = 0;	/* 这里假设0为置空 */
+
+	return max;
+}
+
+
+
+/*
+ * 数组从1开始
+ */
+void
+heap_sort_v2(int a[], int n)
+{
+	int k;
+
+	/* 创建大顶堆 */
+	for (k = n / 2; k >= 1; --k)
+		sink(a, n, k);
+
+	/* 排序 */
+	/* 循环移除顶部元素到数组末尾，然后利用Sink重建堆的操作 */
+	while (n > 1) {
+		swap(a, 1, n--);
+		sink(a, n, 1);
+	}
+}
+
+
+
+

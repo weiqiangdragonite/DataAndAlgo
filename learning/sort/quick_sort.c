@@ -1,5 +1,6 @@
 /*
  * Quick Sort - 不稳定算法
+ * O(nlogn)
  */
 
 #include <stdio.h>
@@ -52,8 +53,10 @@ qsort(int a[], int low, int high)
 	int pivot;
 	if (low < high) {
 		/* 将a[low ... heigh]一分为二，中间值为pivot */
+		/* 划分完成之后，分为左右序列，左边所有元素小于a[pivot]，
+		 * 右边所有元素大于a[pivot]*/
 		pivot = partition(a, low, high);
-		printf("After partition, pivot = %d\n", pivot);
+		printf("After partition, pivot = %d, a[pivot] = %d\n", pivot, a[pivot]);
 		printf("a[%d] ~ a[%d] = ", low, high);
 		for (i = low; i <= high; ++i)
 			printf("%d ", a[i]);

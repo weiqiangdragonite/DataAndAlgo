@@ -1,5 +1,6 @@
 /*
- * Merge Sort
+ * Merge Sort - 归并排序
+ * 复杂度为O(nlogn)
  */
 
 #include <stdio.h>
@@ -10,8 +11,6 @@ int count = 0;
  * 将有序的b[start ... mid]和有序的b[mid+1 ... end]归并为有序的a[start ... end]
  * a为原数组，也是准备归并为有序的数组
  * b为有序的临时数组
- *
- * merge运算正确，但我的msort设计有问题，所以merge也有点问题
  */
 void
 merge(int a[], int b[], int start, int mid, int end)
@@ -33,12 +32,22 @@ merge(int a[], int b[], int start, int mid, int end)
 	/* 将剩余的b[mid ... end]复制到a[] */
 	while (j <= end)
 		a[i++] = b[j++];
+
+	/*
+	int k;
+	printf("merge: ");
+	for (k = 0; k < i; ++k)
+		printf("%d ", a[k]);
+	printf("\n");
+	*/
 }
 
 /*
- * 将[n ... m]归并排序为[n ... m]
+ * 将[n ... m]归并排序
  * 注意n为数组的开始下标，m为数组的结束下标，是[n, m]不是[n, m)。
- * 即9个元素的话,m=8
+ * 即10个元素的话,m=9
+ *
+ * 复杂度为O(nlogn)
  */
 void
 msort(int a[], int b[], int n, int m)
@@ -48,6 +57,7 @@ msort(int a[], int b[], int n, int m)
 	if (n == m) {
 		b[n] = a[n];
 	} else {
+		/* 平分数组 */
 		mid = (n + m) / 2;
 
 		/* 将a[n ... mid]归并为有序的b[n ... mid] */
@@ -73,6 +83,7 @@ msort(int a[], int b[], int n, int m)
 void
 merge_sort_v1(int a[], int n)
 {
+	/* 这里最好动态生成数组 */
 	int b[n];
 	msort(a, b, 0, n - 1);
 }
@@ -152,7 +163,7 @@ main(int argc, char *argv[])
 		printf("%d ", a[i]);
 	printf("\n");
 
-	merge_sort_v2(a, n);
+	merge_sort_v1(a, n);
 
 	printf("After merge sort: ");
 	for (i = 0; i < n; ++i)

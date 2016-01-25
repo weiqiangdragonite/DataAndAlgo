@@ -1,5 +1,6 @@
 /*
  * Insertion Sort - 稳定算法
+ * 时间复杂度: O(n^2)
  */
 
 #include <stdio.h>
@@ -78,6 +79,25 @@ main(int argc, char *argv[])
 	printf("\n");
 
 	return 0;
+}
+
+
+
+void
+insertion_sort(ElemType a[], int n)
+{
+	/* 从第二个元素开始 */
+	for (i = 1; i < n; ++i) {
+		/* 从第i个元素开始，和前面已经排好序的i-1个元素比较 */
+		for (j = i; j > 0; --j) {
+			if (cmp_func(a[j], a[j-1]) < 0)
+				swap(a, j, j-1);
+			/* 如果大于，则不用继续往前比较了，因为前面的元素
+			 * 已经是排好序的了。*/
+			else
+				break;
+		}
+	}
 }
 
 
