@@ -1,5 +1,5 @@
 /*
- * Merge Sort - 归并排序
+ * Merge Sort - 归并排序 稳定的 (适用于外部排序)
  * 复杂度为O(nlogn)
  */
 
@@ -56,7 +56,7 @@ msort(int a[], int b[], int n, int m)
 
 	if (n == m) {
 		b[n] = a[n];
-	} else {
+	} else if (n < m) {
 		/* 平分数组 */
 		mid = (n + m) / 2;
 
@@ -118,7 +118,7 @@ merge_pass(int a[], int b[], int gap, int n)
 	这一步可以放到while里面去? 好像不行，最后两个序列没排好*/
 	for (i = 0; i < n; ++i) {
 		b[i] = a[i];
-		++count;
+		//++count;
 	}
 
 	/* 归并最后两个序列 */

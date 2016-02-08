@@ -1,5 +1,8 @@
 /*
  * Bubble Sort - 属于稳定算法
+ * 推荐使用大数向下沉
+ * 最坏: 逆序 O(n^2)
+ * 最好: 顺序 O(n)
  */
 
 #include <stdio.h>
@@ -65,6 +68,18 @@ bubble_sort_v2(int a[], int n)
 void
 bubble_sort_v3(int a[], int n)
 {
+/* a better way:
+	int i, j;
+	for (i = n-1; i > 0; --i) {
+		for (j = 0; j < i; ++j) {
+			if (a[j] > a[j+1])
+				swap(a[j], a[j+1]);
+		}
+	}
+*/
+
+
+
 	int i, j, tmp;
 
 	for (i = 0; i < n - 1; ++i) {

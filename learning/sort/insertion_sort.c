@@ -1,6 +1,7 @@
 /*
  * Insertion Sort - 稳定算法
- * 时间复杂度: O(n^2)
+ * 最坏: O(n^2)
+ * 最好: O(n)
  */
 
 #include <stdio.h>
