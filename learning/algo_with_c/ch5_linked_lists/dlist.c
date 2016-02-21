@@ -1,19 +1,19 @@
 /*
- * list.c
- * implementation of the linked list abstract datatype
+ * dlist.c
+ * implementation of the doubly-linked list abstract datatype
  */
 
 #include <stdlib.h>
 #include <string.h>
 
-#include "list.h"
+#include "dlist.h"
 
 
 /*
  * initialize the list
  */
 void
-list_init(List *list, void (*destroy)(void *data))
+dlist_init(DList *list, void (*destroy)(void *data))
 {
 	list->size = 0;
 	list->match = NULL;
@@ -24,21 +24,21 @@ list_init(List *list, void (*destroy)(void *data))
 
 
 /*
- * destroys a linked list, remove each element
+ * destroys a doubly-linked list, remove each element
  */
 void
-list_destroy(List *list)
+dlist_destroy(DList *list)
 {
 	void *data;
 
-	while (list_size(list) > 0) {
-		if (list_remove_next(list, NULL, (void **) &data) == 0 &&
-		list->destroy != NULL) {
+	while (dlist_size(list) > 0) {
+		if (dlist_remove(list, dlist_tail(list), (void **) &data) == 0
+		&& list->destroy != NULL) {
 			list->destroy(data);
 		}
 	}
 
-	memset(list, 0, sizeof(List));
+	memset(list, 0, sizeof(DList));
 }
 
 
@@ -46,18 +46,21 @@ list_destroy(List *list)
  *
  */
 int
-list_insert_next(List *list, ListElmt *element, const void *data)
+dlist_insert_next(DList *list, DListElmt *element, const void *data)
 {
-	ListElmt *new_element = (ListElmt *) malloc(sizeof(ListElmt));
+	DListElmt *new_element = (DListElmt *) malloc(sizeof(DListElmt));
 	if (new_element == NULL)
 		return -1;
 	new_element->data = (void *) data;
 
 	/* insert at the head */
 	if (element == NULL) {
-		if (list_size(list) == 0)
+		if (dlist_size(list) == 0)
 			list->tail = new_element;
+		else
+			list->head->prev = new_element;
 
+		new_element->prev = NULL;
 		new_element->next = list->head;
 		list->head = new_element;
 	/* insert after element */
@@ -65,7 +68,9 @@ list_insert_next(List *list, ListElmt *element, const void *data)
 		if (element->next == NULL)
 			list->tail = new_element;
 
+		new_element->prev = element;
 		new_element->next = element->next;
+		element->next->prev = new_element;
 		element->next = new_element;
 	}
 
