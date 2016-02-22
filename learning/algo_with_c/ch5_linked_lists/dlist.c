@@ -48,29 +48,33 @@ dlist_destroy(DList *list)
 int
 dlist_insert_next(DList *list, DListElmt *element, const void *data)
 {
-	DListElmt *new_element = (DListElmt *) malloc(sizeof(DListElmt));
+	DListElmt *new_element;
+
+	if (element == NULL && dlist_size(list) != 0)
+		return -1;
+
+	new_element = (DListElmt *) malloc(sizeof(DListElmt));
 	if (new_element == NULL)
 		return -1;
 	new_element->data = (void *) data;
 
-	/* insert at the head */
-	if (element == NULL) {
-		if (dlist_size(list) == 0)
-			list->tail = new_element;
-		else
-			list->head->prev = new_element;
-
-		new_element->prev = NULL;
-		new_element->next = list->head;
+	/* insert in the empty list */
+	if (dlist_size(list) == 0) {
 		list->head = new_element;
+		new_element->prev = NULL;
+		new_element->next = NULL;
+		list->tail = new_element;
+
 	/* insert after element */
 	} else {
-		if (element->next == NULL)
-			list->tail = new_element;
-
 		new_element->prev = element;
 		new_element->next = element->next;
-		element->next->prev = new_element;
+
+		if (element->next == NULL)
+			list->tail = new_element;
+		else
+			element->next->prev = new_element;
+
 		element->next = new_element;
 	}
 
@@ -83,35 +87,72 @@ dlist_insert_next(DList *list, DListElmt *element, const void *data)
  *
  */
 int
-list_remove_next(List *list, ListElmt *element, void **data)
+dlist_insert_prev(DList *list, DListElmt *element, const void *data)
 {
-	ListElmt *old_element;
+	DListElmt *new_element;
 
-	if (list_size(list) == 0)
+	if (element == NULL && dlist_size(list) != 0)
 		return -1;
 
-	/* remove head element */
-	if (element == NULL) {
-		*data = list->head->data;
-		old_element = list->head;
-		list->head = old_element->next;
+	new_element = (DListElmt *) malloc(sizeof(DListElmt));
+	if (new_element == NULL)
+		return -1;
+	new_element->data = (void *) data;
 
-		if (list_size(list) == 1)
-			list->tail = NULL;
-	/* remove after element */
+	/* insert in the empty list */
+	if (dlist_size(list) == 0) {
+		list->head = new_element;
+		new_element->prev = NULL;
+		new_element->next = NULL;
+		list->tail = new_element;
+
+	/* insert before element */
 	} else {
-		if (element->next == NULL)
-			return -1;
+		new_element->prev = element->prev;
+		new_element->next = element;
 
-		*data = element->next->data;
-		old_element = element->next;
-		element->next = old_element->next;
+		if (element->prev == NULL)
+			list->head = new_element;
+		else
+			element->prev->next = new_element;
 
-		if (element->next == NULL)
-			list->tail = NULL;
+		element->prev = new_element;
 	}
 
-	free(old_element);
+	++list->size;
+	return 0;
+}
+
+
+/*
+ *
+ */
+int
+dlist_remove(DList *list, DListElmt *element, void **data)
+{
+	if (element == NULL || dlist_size(list) == 0)
+		return -1;
+
+	*data = element->data;
+
+	/* remove head element */
+	if (element == list->head) {
+		list->head = element->next;
+		if (list->head == NULL)
+			list->tail = NULL;
+		else
+			element->next->prev = NULL;
+	/* remove element */
+	} else {
+		element->prev->next = element->next;
+
+		if (element->next == NULL)
+			list->tail = element->prev;
+		else
+			element->next->prev = element->prev;
+	}
+
+	free(element);
 	--list->size;
 
 	return 0;
