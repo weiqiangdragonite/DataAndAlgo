@@ -1,9 +1,52 @@
 /*
  * Quick Sort - 不稳定算法
- * O(nlogn)
+ *
+ * 最差: O(n^2)
+ * 平均: O(nlogn)
  */
 
 #include <stdio.h>
+
+
+/* 这个好理解 */
+void quicksort(int a[], int left, int right)
+{
+	if (left > right)
+		return;
+
+	pivot = a[left];
+	i = left;
+	j = right;
+	while (i != j) {
+		/* 先从右边开始找 */
+		while (a[j] >= pivot && i < j)
+			--j;
+		/* 再从左边找 */
+		while (a[i] <= pivot && i < j)
+			++i;
+		/* 交换两个数的位置 */
+		if (i < j)
+			swap(a, i, j);
+	}
+	/* 最终基数归位 */
+	a[left] = a[i];
+	a[i] = pivot;
+
+	/* 继续递归处理左边的 */
+	quicksort(a, left, i-1);
+	/* 递归处理右边的 */
+	quicksort(a, i+1, right);
+}
+
+
+
+
+
+
+
+
+
+
 
 inline void
 swap(int a[], int x, int y)
@@ -28,7 +71,7 @@ partition(int a[], int low, int high)
 	key = a[low];
 	/* 从两端交替向中间扫描 */
 	while (low < high) {
-		/* 找出比关键记录小的元素并交换到低端 */
+		/* 先从右边开始，找出比关键记录小的元素并交换到低端 */
 		while (low < high && a[high] >= key)
 			--high;
 		swap(a, low, high);

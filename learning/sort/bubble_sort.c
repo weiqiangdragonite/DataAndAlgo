@@ -3,7 +3,11 @@
  * 从大到小排，越小越靠后，小数向下沉
  * 从小到大排，越大越靠后，大数向下沉
  *
- * 推荐使用大数向下沉
+ *
+ * 从小到大排序，可以使用小数向上升或者大数向下沉
+ * 从大到小排序，可以使用大数向上升或者小数向下沉
+ *
+ *
  * 最坏: 逆序 O(n^2)
  * 最好: 顺序 O(n)
  */
@@ -11,7 +15,8 @@
 #include <stdio.h>
 
 /*
- * 初级版 - 小数向上升
+ * 从大到小排序
+ * 初级版 - 小数向下沉
  * 比如有10个数，总共要比较 n-1 轮，即要比较9轮；
  * 每轮从最后开始比较；
  * 每比较i轮，前面的i个元素就排序好。
@@ -19,8 +24,19 @@
 void
 bubble_sort_v1(int a[], int n)
 {
-	int i, j, tmp;
+	/* 小数向下沉
+	for (i = n-1; i > 0; ++i) {
+		for (j = 0; j < i; ++j) {
+			if (a[j] < a[j+1])
+				swap(a[j], a[j+1])
+		}
+	}
+	*/
 
+
+
+	int i, j, tmp;
+	/* 小数向上升 */
 	for (i = 0; i < n - 1; ++i) {
 		for (j = n - 1; j > i; --j) {
 			if (a[j] < a[j-1]) {
@@ -63,6 +79,7 @@ bubble_sort_v2(int a[], int n)
 }
 
 /*
+ * 从小到大排序
  * 初级版 - 大数向下沉
  * 比如有10个数，总共要比较 n-1 轮，即要比较9轮；
  * 每轮从前面开始比较；
@@ -71,7 +88,7 @@ bubble_sort_v2(int a[], int n)
 void
 bubble_sort_v3(int a[], int n)
 {
-/* a better way:
+	/* a better way:
 	int i, j;
 	for (i = n-1; i > 0; --i) {
 		for (j = 0; j < i; ++j) {
@@ -79,7 +96,7 @@ bubble_sort_v3(int a[], int n)
 				swap(a[j], a[j+1]);
 		}
 	}
-*/
+	*/
 
 
 
@@ -97,6 +114,7 @@ bubble_sort_v3(int a[], int n)
 }
 
 /*
+ * 从小到大排序
  * 优化版 - 大数向下沉
  * 比如有10个数，总共要比较 n-1 轮，即要比较9轮；
  * 每轮从前面开始比较；
@@ -105,6 +123,22 @@ bubble_sort_v3(int a[], int n)
 void
 bubble_sort_v4(int a[], int n)
 {
+	/*
+	int i, j;
+	for (i = n-1; i > 0; --i) {
+		is_sorted = 0;
+		for (j = 0; j < i; ++j) {
+			if (a[j] > a[j+1])
+				swap(a[j], a[j+1]);
+				is_sortrf = 1;
+		}
+		if (is_sorted == 0)
+			break;
+	}
+	*/
+
+
+
 	int i, j, tmp;
 	unsigned char is_sorted;
 
